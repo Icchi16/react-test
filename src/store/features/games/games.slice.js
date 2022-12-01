@@ -4,10 +4,10 @@ const initialState = {
   data: [],
   currentPage: 0,
   filter: [],
-  di
+  loading: true,
 };
 
-const PAGE_SIZE = 9;
+const LISTING_SIZE = 21;
 
 export const loadGames = createAsyncThunk("games", async (args, thunkApi) => {
   const options = {
@@ -19,7 +19,7 @@ export const loadGames = createAsyncThunk("games", async (args, thunkApi) => {
   };
 
   const res = await fetch(
-    "https://free-to-play-games-database.p.rapidapi.com/api/games",
+    `https://free-to-play-games-database.p.rapidapi.com/api/games?${args}`,
     options
   );
 
@@ -31,7 +31,11 @@ export const loadGames = createAsyncThunk("games", async (args, thunkApi) => {
 const gamesSlice = createSlice({
   name: "games",
   initialState,
-  reducers: {},
+  reducers: {
+    pageScrolled: (state, action) => {
+      return { ...state, currentPage: state.currentPage + 1 };
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(loadGames.fulfilled, (state, action) => {
       return {
@@ -42,5 +46,23 @@ const gamesSlice = createSlice({
   },
 });
 
+export const { pageScrolled } = gamesSlice.actions;
 export const gamesReducer = gamesSlice.reducer;
 export const selectAllGames = (state) => state.games.data;
+
+export const selectGamesList = (state) => {
+  const games = state.games.data;
+
+  const gamesByPage = games.slice(
+    0,
+    state.games.currentPage * 9 + LISTING_SIZE
+  );
+
+
+  return {
+    games: gamesByPage,
+    currentSize: state.games.currentSize,
+    pageScrolled,
+    loading: state.loading,
+  };
+};

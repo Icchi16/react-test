@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
 import { useDispatch } from "react-redux";
-import { loadGames } from "./store/features/games/games.slice";
+import { loadGames, pageScrolled } from "./store/features/games/games.slice";
 
 function App() {
   const dispatch = useDispatch();
 
+  
   useEffect(() => {
     dispatch(loadGames());
   }, []);
