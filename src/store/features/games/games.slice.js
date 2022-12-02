@@ -7,7 +7,7 @@ const initialState = {
   loading: true,
 };
 
-const LISTING_SIZE = 21;
+const LISTING_SIZE = 15;
 
 export const loadGames = createAsyncThunk("games", async (args, thunkApi) => {
   const options = {
