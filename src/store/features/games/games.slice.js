@@ -23,7 +23,12 @@ export const loadGames = createAsyncThunk("games", async (args, thunkApi) => {
     options
   );
 
-  const data = await res.json();
+  const rawData = await res.json();
+
+  const data = await rawData.map((game) => ({
+    ...game,
+    platform: game.platform.replace(", ", ",").split(","),
+  }));
 
   return data;
 });
@@ -57,7 +62,6 @@ export const selectGamesList = (state) => {
     0,
     state.games.currentPage * 9 + LISTING_SIZE
   );
-
 
   return {
     games: gamesByPage,
